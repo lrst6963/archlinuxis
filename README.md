@@ -1,6 +1,8 @@
 # Archlinuxis
 **This is an Arch Linux installation script project**
-
+- 
+- Currently only UEFI is supported.
+- 
 There are still bugs, please modify and use as needed
 
 How to use it? Run the following command in your Arch Linux ISO terminal
