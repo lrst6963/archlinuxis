@@ -4,18 +4,7 @@ red='\033[31m'
 green='\033[32m'
 een='\033[0m'
 blue='\033[34m'
-title() {
-    echo -e "
-
-
-
-                        $blue Arch Linux $red shell script Installer $een $een
-                
-        
-        
-        "
-}
-pause() {
+pause(){
     get_char() {
         SAVEDSTTY=$(stty -g)
         stty -echo
@@ -50,12 +39,26 @@ cml() {
     echo -e "$green Do you update Arch Linux CN mirror? $red (yes/no) $een $een "
     read cmor
     if [ $cmor == 'yes' ]; then
-        echo "::workside
-    Server = https://mirrors.nju.edu.cn/archlinux/$repo/os/$arch
-    Server = https://mirror.redrock.team/archlinux/$repo/os/$arch
-    Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux/$repo/os/$arch
-    Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch" >/etc/pacman.d/mirrorlist
-        pacman -Syy
+        echo "
+##
+## Arch Linux repository mirrorlist
+## Generated on 2021-09-07
+##
+
+## China
+Server = http://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.cqu.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.dgut.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.hit.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirror.lzu.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.neusoft.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.nju.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirror.redrock.team/archlinux/$repo/os/$arch
+Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.wsyu.edu.cn/archlinux/$repo/os/$arch
+Server = http://mirrors.zju.edu.cn/archlinux/$repo/os/$arch" >/etc/pacman.d/mirrorlist
+    pacman -Syy
     fi
 }
 timeupdate() {
@@ -187,7 +190,7 @@ iiim() {
     pacman-key --init
     pacman-key --populate archlinux
     pacman-key --populate archlinuxcn
-    pacman -S archlinuxcn-keyring                                          #cn源中的签名(archlinuxcn-keyring在archLinuxCn)
+    pacman -S archlinuxcn-keyring                                          #cnԴ�е�ǩ��(archlinuxcn-keyring��archLinuxCn)
     pacman -S yay   
     pacman -S fcitx5-im fcitx5-chinese-addons fcitx5-anthy fcitx5-pinyin-moegirl fcitx5-material-color
     echo "
@@ -342,7 +345,7 @@ wii() {
 }
 main() {
     clear
-    title
+    echo -e "$blue Arch Linux $red shell script Installer $een $een"
     echo -e "$green Is it new installed?
 
             1. New installer
@@ -373,6 +376,9 @@ main() {
         wii
     elif [ $oopt == '2' ]; then
         wii
+    else
+	    echo "Enter error!"
+	    exit 111
     fi
 }
 main
