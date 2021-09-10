@@ -40,24 +40,24 @@ cml() {
     read cmor
     if [ $cmor == 'yes' ]; then
         echo "
-##
-## Arch Linux repository mirrorlist
-## Generated on 2021-09-07
-##
+    ##
+    ## Arch Linux repository mirrorlist
+    ## Generated on 2021-09-07
+    ##
 
-## China
-Server = http://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.cqu.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.dgut.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.hit.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirror.lzu.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.neusoft.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.nju.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirror.redrock.team/archlinux/$repo/os/$arch
-Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.wsyu.edu.cn/archlinux/$repo/os/$arch
-Server = http://mirrors.zju.edu.cn/archlinux/$repo/os/$arch" >/etc/pacman.d/mirrorlist
+    ## China
+    Server = http://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.cqu.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.dgut.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.hit.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirror.lzu.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.neusoft.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.nju.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirror.redrock.team/archlinux/$repo/os/$arch
+    Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.wsyu.edu.cn/archlinux/$repo/os/$arch
+    Server = http://mirrors.zju.edu.cn/archlinux/$repo/os/$arch" >/etc/pacman.d/mirrorlist
     pacman -Syy
     fi
 }
@@ -259,24 +259,34 @@ installe() {
             A1
             echo -e "$blue Enter options: $een"
             read oopt
-            if [ $oopt == '1' ]; then
-                testnet
-                pause
-            elif [ $oopt == '2' ]; then
-                cml
-                pause
-            elif [ $oopt == '3' ]; then
-                timeupdate
-                pause
-            elif [ $oopt == '4' ]; then
-                installlinux
-                pause
-            elif [ $oopt == '5' ]; then
-                swchroot
-                pause
-            elif [ $oopt == '6' ]; then
-                exit
-            fi
+            case $oopt in
+                "1")
+                    testnet
+                    pause
+                    ;;
+                "2")
+                    cml
+                    pause
+                    ;;
+                "3")
+                    timeupdate
+                    pause
+                    ;;
+                "4")
+                    installlinux
+                    pause
+                    ;;
+                "5")
+                    swchroot
+                    pause
+                    ;;
+                "6")
+                    exit
+                    ;;
+                *)
+                    echo ""
+                    ;;
+            esac
         done
     elif [ $opt == 'B' ]; then
         while true; do
@@ -284,26 +294,37 @@ installe() {
             B2
             echo -e "$blue Enter options: $een"
             read oopt
-            if [ $oopt == '1' ]; then
-                sethn
-                pause
-            elif [ $oopt == '2' ]; then
-                setlang
-                pause
-            elif [ $oopt == '3' ]; then
-                iucode
-                pause
-            elif [ $oopt == '4' ]; then
-                srootp
-                pause
-            elif [ $oopt == '5' ]; then
-                igrub
-                pause
-            elif [ $oopt == '6' ]; then
-                reb
-            elif [ $oopt == '7' ]; then
-                exit
-            fi
+            case $oopt in
+                "1")
+                    sethn
+                    pause
+                    ;;
+                "2")
+                    setlang
+                    pause
+                    ;;
+                "3")
+                    iucode
+                    pause
+                    ;;
+                "4")
+                    srootp
+                    pause
+                    ;;
+                "5")
+                    igrub
+                    pause
+                    ;;
+                "6")
+                    reb
+                    ;;
+                "7")
+                    exit
+                    ;;
+                *)
+                    echo "ERROR!"
+                    ;;
+            esac
         done
     elif [ $opt == 'C' ]; then
         while true; do
@@ -311,30 +332,42 @@ installe() {
             C3
             echo -e "$blue Enter options: $een"
             read oopt
-            if [ $oopt == '1' ]; then
-                sdni
-                pause
-            elif [ $oopt == '2' ]; then
-                snnu
-                pause
-            elif [ $oopt == '3' ]; then
-                iked
-                pause
-            elif [ $oopt == '4' ]; then
-                setswap
-                pause
-            elif [ $oopt == '5' ]; then
-                ibf
-                pause
-            elif [ $oopt == '6' ]; then
-                iiim
-                pause
-            elif [ $oopt == '7' ]; then
-                sgpu
-                pause
-            elif [ $oopt == '8' ]; then
-                exit
-            fi
+            case $oopt in
+                "1")
+                    sdni
+                    pause
+                    ;;
+                "2")
+                    snnu
+                    pause
+                    ;;
+                "3")
+                    iked
+                    pause
+                    ;;
+                "4")
+                    setswap
+                    pause
+                    ;;
+                "5")
+                    ibf
+                    pause
+                    ;;
+                "6")
+                    iiim
+                    pause
+                    ;;
+                "7")
+                    sgpu
+                    pause
+                    ;;
+                "8")
+                    exit
+                    ;;
+                *)
+                    echo "ERROR"
+                    ;;
+            esac
         done
     fi
 }
