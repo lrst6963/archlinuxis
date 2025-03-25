@@ -30,12 +30,12 @@ error_exit() {
 }
 # 错误提示函数
 error_echo() {
-    echo -e "${RED}[错误] $1${RESET}" >&2
+    echo -e "${red}[错误] $1${een}" >&2
     return 1
 }
 # 成功提示函数
 success_echo() {
-    echo -e "${GREEN}[成功] $1${RESET}"
+    echo -e "${green}[成功] $1${een}"
 }
 
 # 检查命令执行结果
