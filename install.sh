@@ -28,8 +28,12 @@ error_exit() {
     echo -e "${red}[错误] $1${een}" 1>&2
     exit 1
 }
-
-# 成功处理函数
+# 错误提示函数
+error_echo() {
+    echo -e "${RED}[错误] $1${RESET}" >&2
+    return 1
+}
+# 成功提示函数
 success_echo() {
     echo -e "${GREEN}[成功] $1${RESET}"
 }
@@ -524,7 +528,7 @@ main_menu() {
 install_flow() {
     while true; do
         main_menu
-        read -rp "请输入选项 (0-3): " choice
+        read -rp "请输入选项 (0-4): " choice
         case $choice in
             1)
                 # 全新安装流程
