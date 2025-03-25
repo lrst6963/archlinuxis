@@ -10,4 +10,4 @@ How to use it? Run the following command in your Arch Linux ISO terminal
 curl -sL https://raw.githubusercontent.com/lrst6963/archlinuxis/refs/heads/main/install.sh > install.sh && bash install.sh
 ```
 
-![Test image](./image/tmp.png)
+![Test image](https://github.com/lrst6963/archlinuxis/blob/main/image/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_20250325_232226.png)
