@@ -29,12 +29,116 @@ error_exit() {
     exit 1
 }
 
+# 成功处理函数
+success_echo() {
+    echo -e "${GREEN}[成功] $1${RESET}"
+}
+
 # 检查命令执行结果
 check_result() {
     if [ $? -ne 0 ]; then
         error_exit "步骤失败：$1"
     fi
 }
+
+# 获取合适的普通用户
+get_normal_user() {
+    # 如果已经是普通用户，直接返回当前用户名
+    [ "$EUID" -ne 0 ] && { echo "$USER"; return; }
+
+    # 尝试按优先级获取可能的普通用户
+    local candidates=(
+        "$SUDO_USER"                  # sudo 执行时的原始用户
+        "$(logname 2>/dev/null)"      # 登录用户
+        "$(who | awk 'NR==1{print $1}')"  # 当前登录的第一个用户
+        "$(ls /home | head -n 1)"     # /home 下的第一个用户
+    )
+
+    for user in "${candidates[@]}"; do
+        # 验证用户是否存在且不是系统用户（UID >= 1000）
+        if id -u "$user" >/dev/null 2>&1 && \
+           [ "$(id -u "$user")" -ge 1000 ] && \
+           [ "$user" != "root" ]; then
+            echo "$user"
+            return
+        fi
+    done
+
+    error_echo "未找到合适的普通用户！请手动创建普通用户后再执行。"
+    return 1
+}
+
+# yay安装函数
+install_yay() {
+    # 检查运行环境
+    if ! uname -a | grep -qi 'arch'; then
+        error_echo "此脚本仅适用于 Arch Linux 及其衍生发行版"
+        return 1
+    fi
+
+    # 获取执行用户身份
+    if [ "$EUID" -eq 0 ]; then
+        NORMAL_USER=$(get_normal_user) || return 1
+        RUN_CMD="sudo -u $NORMAL_USER"
+        echo -e "${YELLOW}[信息] 检测到 root 身份，将使用普通用户 $NORMAL_USER 执行安装${RESET}"
+    else
+        RUN_CMD=""
+        NORMAL_USER="$USER"
+    fi
+
+    # 安装依赖（需要root权限）
+    echo -e "${YELLOW}[信息] 正在安装依赖...${RESET}"
+    sudo pacman -S --needed --noconfirm git base-devel || {
+        error_echo "依赖安装失败，请检查：\n1. 网络连接\n2. 软件源配置\n3. sudo权限"
+        return 1
+    }
+
+    # 创建临时构建目录
+    local build_dir
+    build_dir=$(mktemp -d) || {
+        error_echo "无法创建临时目录"
+        return 1
+    }
+    echo -e "${YELLOW}[信息] 使用临时构建目录: $build_dir${RESET}"
+
+    # 克隆仓库
+    echo -e "${YELLOW}[信息] 正在克隆 yay 仓库...${RESET}"
+    if ! $RUN_CMD git clone https://aur.archlinux.org/yay.git "$build_dir"; then
+        rm -rf "$build_dir"
+        error_echo "仓库克隆失败，请检查：\n1. 网络连接\n2. git 是否安装\n3. 磁盘空间"
+        return 1
+    fi
+
+    # 构建安装
+    echo -e "${YELLOW}[信息] 正在构建安装 yay...${RESET}"
+    if ! (cd "$build_dir" && $RUN_CMD makepkg -si --noconfirm); then
+        rm -rf "$build_dir"
+        error_echo "构建安装失败，请检查：\n1. 依赖是否完整\n2. 磁盘空间\n3. 网络连接"
+        return 1
+    fi
+
+    # 清理临时目录
+    rm -rf "$build_dir" && success_echo "已清理临时构建文件"
+
+    # 验证安装
+    if $RUN_CMD command -v yay &>/dev/null; then
+        success_echo "yay 安装成功！版本信息：$($RUN_CMD yay --version | head -n 1)"
+    else
+        error_echo "安装验证失败，yay 命令未找到"
+        return 1
+    fi
+
+    # 显示使用说明
+    echo -e "\n${YELLOW}常用命令："
+    echo -e "  yay -S 包名      # 安装软件包"
+    echo -e "  yay -Ss 关键词   # 搜索软件包"
+    echo -e "  yay -Syu         # 更新系统和AUR包"
+    echo -e "  yay -Qu          # 查看可更新包"
+    echo -e "  yay -Rns 包名    # 彻底卸载软件包${RESET}"
+    pause
+    return 0
+}
+
 
 #-----------------------------
 # 阶段A：基础系统安装
@@ -411,6 +515,7 @@ main_menu() {
     echo -e "1. 全新安装Arch Linux"
     echo -e "2. 进入Chroot配置"
     echo -e "3. 安装桌面环境"
+    echo -e "4. 安装yay(AUR助手)(仅限高级用户)"
     echo -e "0. 退出"
     echo -e "${blue}==============================================${een}"
 }
@@ -451,6 +556,9 @@ install_flow() {
                 install_fcitx
                 install_software
                 echo -e "${green}桌面环境安装完成！输入 reboot 重启系统${een}"
+                ;;
+            4)
+                install_yay
                 ;;
             0)
                 exit 0
