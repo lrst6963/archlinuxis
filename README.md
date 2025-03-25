@@ -9,5 +9,9 @@
 ``` shell
 curl -sL https://raw.githubusercontent.com/lrst6963/archlinuxis/refs/heads/main/install.sh > install.sh && chmod +x install.sh && ./install.sh
 ```
+### 使用代理
+``` shell
+curl -sL https://gh-proxy.com/raw.githubusercontent.com/lrst6963/archlinuxis/refs/heads/main/install.sh > install.sh && chmod +x install.sh && ./install.sh
+```
 
 ![Test image](image/屏幕截图_20250326_032900.png)
