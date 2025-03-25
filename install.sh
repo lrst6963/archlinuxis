@@ -83,14 +83,14 @@ install_yay() {
     if [ "$EUID" -eq 0 ]; then
         NORMAL_USER=$(get_normal_user) || return 1
         RUN_CMD="sudo -u $NORMAL_USER"
-        echo -e "${YELLOW}[信息] 检测到 root 身份，将使用普通用户 $NORMAL_USER 执行安装${RESET}"
+        echo -e "${yellow}[信息] 检测到 root 身份，将使用普通用户 $NORMAL_USER 执行安装${een}"
     else
         RUN_CMD=""
         NORMAL_USER="$USER"
     fi
 
     # 安装依赖（需要root权限）
-    echo -e "${YELLOW}[信息] 正在安装依赖...${RESET}"
+    echo -e "${yellow}[信息] 正在安装依赖...${een}"
     sudo pacman -S --needed --noconfirm git base-devel go || {
         error_echo "依赖安装失败，请检查：\n1. 网络连接\n2. 软件源配置\n3. sudo权限"
         return 1
@@ -117,17 +117,17 @@ install_yay() {
     }
     # 创建临时构建目录（使用安全创建函数）
     build_dir=$(safe_mktemp_dir) || return 1
-    echo -e "${YELLOW}[信息] 使用临时构建目录: $build_dir${RESET}"
+    echo -e "${yellow}[信息] 使用临时构建目录: $build_dir${een}"
 
     # 克隆仓库（指定目标目录）
-    echo -e "${YELLOW}[信息] 正在克隆 yay 仓库...${RESET}"
+    echo -e "${yellow}[信息] 正在克隆 yay 仓库...${een}"
     if ! $RUN_CMD git clone https://aur.archlinux.org/yay.git "$build_dir/yay"; then
         error_echo "仓库克隆失败，请检查：\n1. 网络连接\n2. git 是否安装\n3. 磁盘空间"
         return 1
     fi
 
     # 构建安装
-    echo -e "${YELLOW}[信息] 正在构建安装 yay...${RESET}"
+    echo -e "${yellow}[信息] 正在构建安装 yay...${een}"
     if ! (cd "$build_dir/yay" && $RUN_CMD makepkg -si --noconfirm); then
         rm -rf "$build_dir"
         error_echo "构建安装失败，请检查：\n1. 依赖是否完整\n2. 磁盘空间\n3. 网络连接"
@@ -146,12 +146,12 @@ install_yay() {
     fi
 
     # 显示使用说明
-    echo -e "\n${YELLOW}常用命令："
+    echo -e "\n${yellow}常用命令："
     echo -e "  yay -S 包名      # 安装软件包"
     echo -e "  yay -Ss 关键词   # 搜索软件包"
     echo -e "  yay -Syu         # 更新系统和AUR包"
     echo -e "  yay -Qu          # 查看可更新包"
-    echo -e "  yay -Rns 包名    # 彻底卸载软件包${RESET}"
+    echo -e "  yay -Rns 包名    # 彻底卸载软件包${een}"
     return 0
 }
 
