@@ -139,7 +139,7 @@ install_yay() {
 
     # 验证安装
     if command -v yay &>/dev/null; then
-        success_echo "yay 安装成功！版本信息：$(yay --version | head -n 1)"
+        success_echo "yay 安装成功！版本信息：$($RUN_CMD yay --version | head -n 1)"
     else
         error_echo "安装验证失败，yay 命令未找到"
         return 1
@@ -152,7 +152,6 @@ install_yay() {
     echo -e "  yay -Syu         # 更新系统和AUR包"
     echo -e "  yay -Qu          # 查看可更新包"
     echo -e "  yay -Rns 包名    # 彻底卸载软件包${RESET}"
-    pause
     return 0
 }
 
