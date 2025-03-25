@@ -390,7 +390,7 @@ install_flow() {
             1)
                 # 全新安装流程
                 test_network
-                show_partition_guidance
+                show_partition_guide
 		auto_mount
                 configure_mirrors
                 sync_time
