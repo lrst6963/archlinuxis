@@ -278,7 +278,7 @@ create_user() {
 # 安装KDE桌面
 install_kde() {
     echo -e "${blue}[2/4] 正在安装KDE桌面环境...${een}"
-    pacman -S --needed kde-applications konsole dolphin sddm plasma-nm --noconfirm
+    pacman -S kde-applications plasma wayland sddm --noconfirm
     pacman -S --needed adobe-source-han-serif-cn-fonts wqy-zenhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra --noconfirm
     systemctl enable sddm
 }
