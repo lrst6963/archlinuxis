@@ -250,10 +250,15 @@ install_ucode() {
         pacman -S amd-ucode --noconfirm
     fi
 }
-# 安装基础网络管理程序和SSH
+# 启用32位库支持并安装基础网络管理程序和SSH
 network_install(){
+    grep -x "\[multilib\]" /etc/pacman.conf > /dev/null
+    if [ "$?" != "0" ];then
+       	echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | tee -a /etc/pacman.conf > /dev/null
+    fi
+    /etc/pacman.conf
     echo -e "${blue}[5/6] 安装SSH和网络管理器...${een}"
-    pacman -S networkmanager openssh --noconfirm
+    pacman -Sy networkmanager openssh --noconfirm
     systemctl disable iwd                                                  #确保iwd开机处于关闭状态，其无线连接会与NetworkManager冲突
     systemctl enable NetworkManager
     #允许ROOT用户密码登陆SSH
@@ -356,7 +361,7 @@ install_amd() {
     echo -e "${blue}正在安装AMD显卡驱动...${een}"
     pacman -S --noconfirm mesa lib32-mesa vulkan-radeon libva-mesa-driver mesa-vdpau
     echo "加速视频解码支持："
-    pacman -S --noconfirm radeontop radeon-profile
+    pacman -S --noconfirm radeontool radeontop rocm-llvm vulkan-radeon lib32-vulkan-radeon
 }
 
 # 安装Intel驱动
