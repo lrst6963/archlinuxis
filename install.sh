@@ -1,6 +1,6 @@
 #!/bin/bash
-# Arch Linux 全自动安装脚本
-# 作者：Lrst_6963 (优化：助手)
+# Arch Linux 自动安装脚本
+# 作者：Lrst_6963
 # 功能：支持基础系统安装、Chroot配置、图形界面安装
 # 注意：请以root用户执行，安装前请备份重要数据！
 
@@ -399,7 +399,7 @@ install_gpu_drivers() {
 #-----------------------------
 
 main_menu() {
-    clear
+    #clear
     echo -e "${blue}=============================================="
     echo "          Arch Linux 全自动安装向导"
     echo "=============================================="
@@ -425,7 +425,7 @@ install_flow() {
                 sync_time
                 install_base
 		chmod +x ./install.sh && cp ./install.sh /mnt/root/install.sh
-                echo -e "${green}基础系统安装完成！请输入 arch-chroot /mnt /root/install.sh进入配置${een}"
+                echo -e "${green}基础系统安装完成！请退出脚本输入:arch-chroot /mnt /root/install.sh 继续安装${een}"
                 ;;
             2)
                 # Chroot配置流程
