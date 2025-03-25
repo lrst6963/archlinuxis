@@ -128,7 +128,7 @@ install_yay() {
 
     # 构建安装
     echo -e "${YELLOW}[信息] 正在构建安装 yay...${RESET}"
-    if ! (cd "$build_dir/yay" && $RUN_CMD makepkg -si --noconfirm); then
+    if ! (cd "$build_dir/yay" && makepkg -si --noconfirm); then
         rm -rf "$build_dir"
         error_echo "构建安装失败，请检查：\n1. 依赖是否完整\n2. 磁盘空间\n3. 网络连接"
         return 1
@@ -138,8 +138,8 @@ install_yay() {
     rm -rf "$build_dir" && success_echo "已清理临时构建文件"
 
     # 验证安装
-    if $RUN_CMD command -v yay &>/dev/null; then
-        success_echo "yay 安装成功！版本信息：$($RUN_CMD yay --version | head -n 1)"
+    if command -v yay &>/dev/null; then
+        success_echo "yay 安装成功！版本信息：$(yay --version | head -n 1)"
     else
         error_echo "安装验证失败，yay 命令未找到"
         return 1
