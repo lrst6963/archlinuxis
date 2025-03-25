@@ -278,8 +278,8 @@ create_user() {
 # 安装KDE桌面
 install_kde() {
     echo -e "${blue}[2/4] 正在安装完整KDE桌面环境...${een}"
-    pacman -S kde-applications plasma wayland sddm --noconfirm
-    pacman -S --needed adobe-source-han-serif-cn-fonts wqy-zenhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra --noconfirm
+    pacman -Sq kde-applications plasma wayland sddm --noconfirm
+    pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra --noconfirm
     systemctl enable sddm
 }
 
@@ -297,7 +297,7 @@ EOF
 # 安装常用软件
 install_software() {
     echo -e "${blue}[4/4] 正在安装常用软件...${een}"
-    pacman -S firefox chromium make ntfs-3g neofetch git wget kate bind --noconfirm
+    pacman -Sq firefox chromium make ntfs-3g neofetch git wget kate bind --noconfirm
 }
 # 检测显卡类型
 detect_gpu() {
@@ -400,14 +400,14 @@ install_gpu_drivers() {
 
 main_menu() {
     #clear
-    echo -e "${blue}=============================================="
-    echo "          Arch Linux 全自动安装向导"
-    echo "=============================================="
-    echo "1. 全新安装Arch Linux"
-    echo "2. 进入Chroot配置"
-    echo "3. 安装桌面环境"
-    echo "0. 退出"
-    echo -e "==============================================${een}"
+    echo -e "${blue}==============================================${een}"
+    echo -e "          Arch Linux 全自动安装向导"
+    echo -e "${blue}==============================================${een}"
+    echo -e "1. 全新安装Arch Linux"
+    echo -e "2. 进入Chroot配置"
+    echo -e "3. 安装桌面环境"
+    echo -e "0. 退出"
+    echo -e "${blue}==============================================${een}"
 }
 
 # 安装流程控制
