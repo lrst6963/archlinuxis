@@ -91,7 +91,7 @@ install_yay() {
 
     # 安装依赖（需要root权限）
     echo -e "${YELLOW}[信息] 正在安装依赖...${RESET}"
-    sudo pacman -S --needed --noconfirm git base-devel || {
+    sudo pacman -S --needed --noconfirm git base-devel go || {
         error_echo "依赖安装失败，请检查：\n1. 网络连接\n2. 软件源配置\n3. sudo权限"
         return 1
     }
@@ -128,7 +128,7 @@ install_yay() {
 
     # 构建安装
     echo -e "${YELLOW}[信息] 正在构建安装 yay...${RESET}"
-    if ! (cd "$build_dir" && $RUN_CMD makepkg -si --noconfirm); then
+    if ! (cd "$build_dir/yay" && $RUN_CMD makepkg -si --noconfirm); then
         rm -rf "$build_dir"
         error_echo "构建安装失败，请检查：\n1. 依赖是否完整\n2. 磁盘空间\n3. 网络连接"
         return 1
@@ -398,7 +398,7 @@ create_user() {
     useradd -m -G wheel -s /bin/bash "$username"
     echo -e "${green}设置用户 $username 的密码：${een}"
     passwd "$username"
-    sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+    echo ' %wheel ALL=(ALL:ALL) ALL' >> /etc/sudoers
 }
 
 # 安装KDE桌面
