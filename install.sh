@@ -160,7 +160,7 @@ auto_mount() {
 # 基础系统安装
 install_base() {
     echo -e "${blue}[4/5] 正在安装基础系统...${een}"
-    pacstrap /mnt base base-devel linux linux-firmware dhcpcd nano sudo iwd vim bash-completion networkmanager
+    pacstrap /mnt base base-devel linux linux-firmware linux-headers dhcpcd nano sudo iwd vim bash-completion networkmanager usbutils
     check_result "基础系统安装失败"
     echo -e "${blue}[5/5] 生成文件系统表...${een}"
     genfstab -U /mnt >> /mnt/etc/fstab
@@ -189,7 +189,7 @@ install_bluetooth() {
         echo -e "${green}检测到蓝牙设备，开始安装支持组件...${een}"
         # 安装基础软件包
  	echo -e "${blue}[1/3] 正在安装蓝牙核心组件...${een}"
-    	pacman -S --noconfirm bluez bluez-utils bluez-plugins    
+    	pacman -S --noconfirm bluez bluez-utils bluez-plugins  
     	# 安装图形管理工具
     	echo -e "${blue}[2/3] 正在安装蓝牙管理工具...${een}"
     	pacman -S --noconfirm blueman
