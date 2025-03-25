@@ -62,9 +62,38 @@ EOF
 
 # 时间同步
 sync_time() {
-    echo -e "${blue}[3/5] 正在同步系统时间...${een}"
+    echo -e "${blue}[3/5] 正在配置时间同步...${een}"
+    
+    # 备份原始配置
+    cp /etc/systemd/timesyncd.conf /etc/systemd/timesyncd.conf.bak
+    
+    # 自定义NTP服务器（国内推荐）
+    cat > /etc/systemd/timesyncd.conf <<-'EOF'
+[Time]
+# 国内NTP服务器列表
+NTP=ntp.aliyun.com  ntp.tencent.com  cn.ntp.org.cn  ntp.tuna.tsinghua.edu.cn
+FallbackNTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
+# 加快初始同步速度
+PollIntervalMinSec=16
+PollIntervalMaxSec=32
+EOF
+
+    # 启用并强制同步
     timedatectl set-ntp true
-    timedatectl status || error_exit "时间同步失败"
+    systemctl restart systemd-timesyncd
+    
+    # 验证同步状态
+    echo -e "${green}当前使用的NTP服务器：${een}"
+    timedatectl show-timesync --property=ServerName --value
+    
+    echo -e "${green}时间同步状态：${een}"
+    if timedatectl status | grep -q "synchronized: yes"; then
+        echo -e "${green}✓ 时间同步成功${een}"
+    else
+        echo -e "${yellow}⚠ 时间未立即同步，正在后台处理...${een}"
+        sleep 3
+        timedatectl status || error_exit "时间同步失败"
+    fi
 }
 
 # 磁盘分区提示
