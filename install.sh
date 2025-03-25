@@ -395,7 +395,8 @@ install_flow() {
                 configure_mirrors
                 sync_time
                 install_base
-                echo -e "${green}基础系统安装完成！请输入 arch-chroot /mnt 进入配置${een}"
+		chmod +x ./install.sh && cp ./install.sh /mnt/root/install.sh
+                echo -e "${green}基础系统安装完成！请输入 arch-chroot /mnt /root/install.sh进入配置${een}"
                 ;;
             2)
                 # Chroot配置流程
