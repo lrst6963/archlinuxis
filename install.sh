@@ -43,7 +43,7 @@ check_result() {
 # 网络连接测试
 test_network() {
     echo -e "${blue}[1/5] 正在测试网络连接...${een}"
-    ping -c 4 archlinux.org || error_exit "网络连接失败，请检查网络设置"
+    ping -c 4 www.bing.com || error_exit "网络连接失败，请检查网络设置"
     echo -e "${green}✓ 网络连接正常${een}"
 }
 
@@ -92,11 +92,11 @@ auto_mount() {
     umount -R /mnt 2>/dev/null
 
     # 获取用户输入
-    echo -e "\n${green}请输入根分区路径（如/dev/nvme0n1p2）：${een}"
+    echo -e "\n${green}请输入根分区路径（如/dev/nvme0n1p2）：${een}\c"
     read -r root_part
     validate_partition "$root_part"
 
-    echo -e "${green}请输入EFI分区路径（如/dev/nvme0n1p1）：${een}"
+    echo -e "${green}请输入EFI分区路径（如/dev/nvme0n1p1）：${een}\c"
     read -r efi_part
     validate_partition "$efi_part"
 
