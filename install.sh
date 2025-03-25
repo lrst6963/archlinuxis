@@ -79,7 +79,26 @@ install_yay() {
         error_echo "此脚本仅适用于 Arch Linux 及其衍生发行版"
         return 1
     fi
-
+    safe_mktemp_dir() {
+	    local max_retries=5
+	    local retry_count=0
+	    
+	    while [ $retry_count -lt $max_retries ]; do
+	        local temp_dir=$(mktemp -d)
+	        # 检查目录是否为空
+	        if [ -d "$temp_dir" ] && [ -z "$(ls -A $temp_dir)" ]; then
+	            echo "$temp_dir"
+	            return 0
+	        else
+	            # 如果不是空目录则删除重试
+	            rm -rf "$temp_dir"
+	            ((retry_count++))
+	        fi
+	    done
+	    
+	    error_echo "无法创建空临时目录（重试 $max_retries 次后失败）"
+	    return 1
+    }
     # 获取执行用户身份
     if [ "$EUID" -eq 0 ]; then
         NORMAL_USER=$(get_normal_user) || return 1
@@ -97,18 +116,13 @@ install_yay() {
         return 1
     }
 
-    # 创建临时构建目录
-    local build_dir
-    build_dir=$(mktemp -d) || {
-        error_echo "无法创建临时目录"
-        return 1
-    }
+    # 创建临时构建目录（使用安全创建函数）
+    build_dir=$(safe_mktemp_dir) || return 1
     echo -e "${YELLOW}[信息] 使用临时构建目录: $build_dir${RESET}"
 
-    # 克隆仓库
+    # 克隆仓库（指定目标目录）
     echo -e "${YELLOW}[信息] 正在克隆 yay 仓库...${RESET}"
-    if ! $RUN_CMD git clone https://aur.archlinux.org/yay.git "$build_dir"; then
-        rm -rf "$build_dir"
+    if ! $RUN_CMD git clone https://aur.archlinux.org/yay.git "$build_dir/yay"; then
         error_echo "仓库克隆失败，请检查：\n1. 网络连接\n2. git 是否安装\n3. 磁盘空间"
         return 1
     fi
