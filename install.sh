@@ -110,7 +110,7 @@ auto_mount() {
     echo -e -n "${green}是否格式化EFI分区？(y/N): ${een}"
     read -r format_efi_confirm
     if [[ "${format_efi_confirm,,}" == "y" ]]; then
-        mkfs.ext4 -F "$efi_part" || error_exit "EFI分区格式化失败"
+        mkfs.vfat -F 32 "$efi_part" || error_exit "EFI分区格式化失败"
     fi
 
     # 挂载根分区
