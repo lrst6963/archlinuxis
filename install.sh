@@ -561,7 +561,7 @@ install_flow() {
 		network_install
                 install_bootloader
                 install_ucode
-		install_gpu_drives
+  		install_gpu_drivers
                 echo -e "${green}系统配置完成！建议重启后继续安装桌面环境${een}"
                 ;;
             3)
