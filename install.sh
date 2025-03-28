@@ -360,11 +360,10 @@ install_bootloader() {
     pacman -S grub efibootmgr --noconfirm
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux
     if [ $? -ne 0 ];then 
-    	grub-install --target=xerror_exit "GRUB安装失败86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux --removable
+    	grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux --removable || error_exit "GRUB安装失败"
     	success_echo "GRUB安装成功"
-     else
-     	error_exit "GRUB安装失败"
     fi
+    success_echo "GRUB安装成功"
     grub-mkconfig -o /boot/grub/grub.cfg || error_exit "GRUB配置失败"
 }
 
