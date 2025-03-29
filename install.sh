@@ -581,7 +581,7 @@ install_flow() {
                 sync_time
                 install_base
 		chmod +x ./install.sh && cp ./install.sh /mnt/root/install.sh
-                echo -e "${green}基础系统安装完成！请退出脚本输入:arch-chroot /mnt /root/install.sh 继续安装${een}"
+                echo -e "${green}基础系统安装完成！请退出脚本输入:"arch-chroot /mnt /root/install.sh"继续安装${een}"
                 ;;
             2)
                 # Chroot配置流程
