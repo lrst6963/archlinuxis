@@ -411,17 +411,17 @@ install_kde() {
 
 # 安装 GNOME
 install_gnome() {
-    echo -e "${blue}[2/4] 正在安装 GNOME 桌面环境...${reset}"
+    echo -e "${blue}[2/4] 正在安装 GNOME 桌面环境...${een}"
     pacman -Sq gnome gnome-extra wayland gdm --noconfirm
     pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei wqy-microhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-sourcecodepro-nerd --noconfirm
     systemctl enable gdm
-    echo -e "${green}GNOME 桌面环境安装完成！${reset}"
+    echo -e "${green}GNOME 桌面环境安装完成！${een}"
 }
 
 install_desktop() {
-	echo -e "${yellow}请选择要安装的桌面环境：${reset}"
-	echo -e "${cyan}1. KDE Plasma${reset}"
-	echo -e "${cyan}2. GNOME${reset}"
+	echo -e "${yellow}请选择要安装的桌面环境：${een}"
+	echo -e "${cyan}1. KDE Plasma${een}"
+	echo -e "${cyan}2. GNOME${een}"
 	read -p "请输入选项 (1/2): " choice
  	while true
   	do
@@ -433,7 +433,7 @@ install_desktop() {
 		        install_gnome
 		        ;;
 		    *)
-		        echo -e "${red}无效选项，请重新输入${reset}"
+		        echo -e "${red}无效选项，请重新输入${een}"
 		        exit 1
 		        ;;
 		esac
