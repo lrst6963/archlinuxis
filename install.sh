@@ -310,10 +310,7 @@ install_bluetooth() {
         echo -e "${green}检测到蓝牙设备，开始安装支持组件...${een}"
         # 安装基础软件包
  	echo -e "${blue}[1/3] 正在安装蓝牙核心组件...${een}"
-    	pacman -S --noconfirm bluez bluez-utils bluez-plugins  
-    	# 安装音频支持
-    	echo -e "${blue}[3/3] 正在安装蓝牙音频支持...${een}"
-    	pacman -S --noconfirm pulseaudio-bluetooth
+    	pacman -S --noconfirm bluez bluez-utils bluez-plugins
     	# 配置服务
     	echo -e "${green}启用蓝牙服务...${een}"
     	systemctl enable --now bluetooth.service
@@ -355,7 +352,7 @@ set_root_password() {
 install_bootloader() {
     echo -e "${blue}[4/6] 正在安装GRUB引导...${een}"
     pacman -S grub efibootmgr --noconfirm
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux || error_echo "GRUB安装失败,启用备用安装..."
     if [ $? -ne 0 ];then 
     	grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux --removable || error_exit "GRUB安装失败"
     	success_echo "GRUB安装成功"
@@ -407,7 +404,7 @@ create_user() {
 install_kde() {
     echo -e "${blue}[2/4] 正在安装完整KDE桌面环境...${een}"
     pacman -Sq kde-applications plasma wayland sddm --noconfirm
-    pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra --noconfirm
+    pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei wqy-microhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-sourcecodepro-nerd --noconfirm 
     systemctl enable sddm
 }
 
@@ -425,12 +422,11 @@ EOF
 # 安装常用软件
 install_software() {
     echo -e "${blue}[4/4] 正在安装常用软件...${een}"
-    pacman -Sq btop net-tools firefox make ntfs-3g neofetch git wget kate bind --noconfirm
+    pacman -Sq htop btop net-tools firefox make ntfs-3g neofetch git wget kate bind --noconfirm
 }
 # 检测显卡类型
 detect_gpu() {
     local gpu_info=$(lspci -k | grep -A 2 -E "(VGA|3D)")
-    
     if echo "$gpu_info" | grep -iq "nvidia"; then
         echo "nvidia"
     elif echo "$gpu_info" | grep -iq "amd/ati"; then
@@ -570,8 +566,8 @@ install_flow() {
             3)
                 # 桌面环境安装
                 create_user
-		install_bluetooth
                 install_kde
+		install_bluetooth  
                 install_fcitx
                 install_software
                 echo -e "${green}桌面环境安装完成！输入 reboot 重启系统${een}"
