@@ -407,6 +407,7 @@ install_kde() {
     pacman -Sq kde-applications plasma wayland sddm --noconfirm
     pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei wqy-microhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-sourcecodepro-nerd --noconfirm 
     systemctl enable sddm
+    echo -e "${green}KDE 桌面环境安装完成！${een}"
 }
 
 # 安装 GNOME
@@ -423,21 +424,19 @@ install_desktop() {
 	echo -e "${cyan}1. KDE Plasma${een}"
 	echo -e "${cyan}2. GNOME${een}"
 	read -p "请输入选项 (1/2): " choice
- 	while true
-  	do
-		case $choice in
-		    1)
-		        install_kde
-		        ;;
-		    2)
-		        install_gnome
-		        ;;
-		    *)
-		        echo -e "${red}无效选项，请重新输入${een}"
-		        exit 1
-		        ;;
-		esac
-  	done
+	case $choice in
+	   1)
+		install_kde
+	   	;;
+	   2)
+		install_gnome
+		;;
+	   *)
+		echo -e "${red}无效选项，请重新输入${een}"
+		install_desktop
+		;;
+	esac
+
 }
 # 安装中文输入法
 install_fcitx() {
