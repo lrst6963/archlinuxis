@@ -311,9 +311,6 @@ install_bluetooth() {
         # 安装基础软件包
  	echo -e "${blue}[1/3] 正在安装蓝牙核心组件...${een}"
     	pacman -S --noconfirm bluez bluez-utils bluez-plugins  
-    	# 安装图形管理工具
-    	echo -e "${blue}[2/3] 正在安装蓝牙管理工具...${een}"
-    	pacman -S --noconfirm blueman
     	# 安装音频支持
     	echo -e "${blue}[3/3] 正在安装蓝牙音频支持...${een}"
     	pacman -S --noconfirm pulseaudio-bluetooth
@@ -432,7 +429,6 @@ install_software() {
 }
 # 检测显卡类型
 detect_gpu() {
-    echo -e "${blue}[硬件检测] 正在识别显卡类型...${een}"
     local gpu_info=$(lspci -k | grep -A 2 -E "(VGA|3D)")
     
     if echo "$gpu_info" | grep -iq "nvidia"; then
@@ -501,6 +497,7 @@ install_intel() {
 
 # 显卡驱动主函数
 install_gpu_drivers() {
+    echo -e "${blue}[硬件检测] 正在识别显卡类型...${een}"
     local gpu_type=$(detect_gpu)
     
     case $gpu_type in
