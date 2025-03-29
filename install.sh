@@ -333,7 +333,7 @@ configure_localization() {
 
 # 设置主机名
 set_hostname() {
-    echo -e "${green}请输入主机名：${een}"
+    echo -e "${green}请输入主机名：${een}\c"
     read -r hostname
     echo "$hostname" > /etc/hostname
     cat > /etc/hosts <<-EOF
