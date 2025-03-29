@@ -561,7 +561,8 @@ main_menu() {
     echo -e "2. 进入Chroot配置"
     echo -e "3. 安装桌面环境"
     echo -e "4. 安装yay(AUR助手)(仅限高级用户)"
-    echo -e "0. 退出"
+    echo -e "5. 重启"
+    echo -e "0. 退出脚本"
     echo -e "${blue}==============================================${een}"
 }
 
@@ -604,6 +605,9 @@ install_flow() {
                 ;;
             4)
                 install_yay
+                ;;
+	    5)
+                reboot
                 ;;
             0)
                 exit 0
