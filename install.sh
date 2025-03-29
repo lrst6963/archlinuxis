@@ -400,7 +400,7 @@ create_user() {
     echo ' %wheel ALL=(ALL:ALL) ALL' >> /etc/sudoers
 }
 
-# 安装KDE桌面
+# 安装 KDE
 install_kde() {
     echo -e "${blue}[2/4] 正在安装完整KDE桌面环境...${een}"
     pacman -Sq kde-applications plasma wayland sddm --noconfirm
@@ -408,6 +408,36 @@ install_kde() {
     systemctl enable sddm
 }
 
+# 安装 GNOME
+install_gnome() {
+    echo -e "${blue}[2/4] 正在安装 GNOME 桌面环境...${reset}"
+    pacman -Sq gnome gnome-extra wayland gdm --noconfirm
+    pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei wqy-microhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-sourcecodepro-nerd --noconfirm
+    systemctl enable gdm
+    echo -e "${green}GNOME 桌面环境安装完成！${reset}"
+}
+
+install_desktop() {
+	echo -e "${yellow}请选择要安装的桌面环境：${reset}"
+	echo -e "${cyan}1. KDE Plasma${reset}"
+	echo -e "${cyan}2. GNOME${reset}"
+	read -p "请输入选项 (1/2): " choice
+ 	while true
+  	do
+		case $choice in
+		    1)
+		        install_kde
+		        ;;
+		    2)
+		        install_gnome
+		        ;;
+		    *)
+		        echo -e "${red}无效选项，请重新输入${reset}"
+		        exit 1
+		        ;;
+		esac
+  	done
+}
 # 安装中文输入法
 install_fcitx() {
     echo -e "${blue}[3/4] 正在安装中文输入法...${een}"
@@ -566,7 +596,7 @@ install_flow() {
             3)
                 # 桌面环境安装
                 create_user
-                install_kde
+                install_desktop
 		install_bluetooth  
                 install_fcitx
                 install_software
