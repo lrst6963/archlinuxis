@@ -425,7 +425,7 @@ EOF
 # 安装常用软件
 install_software() {
     echo -e "${blue}[4/4] 正在安装常用软件...${een}"
-    pacman -Sq firefox chromium make ntfs-3g neofetch git wget kate bind --noconfirm
+    pacman -Sq btop net-tools firefox make ntfs-3g neofetch git wget kate bind --noconfirm
 }
 # 检测显卡类型
 detect_gpu() {
