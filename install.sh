@@ -37,7 +37,7 @@ error_echo() {
 # 成功提示函数
 success_echo() {
     echo -e "${green}[成功] $1${een}" >&2
-    return 1
+    return 0
 }
 
 # 检查命令执行结果
@@ -178,7 +178,7 @@ Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/\$repo/os/\$arch
 Server = https://mirrors.ustc.edu.cn/archlinux/\$repo/os/\$arch
 Server = https://mirror.bfsu.edu.cn/archlinux/\$repo/os/\$arch
 EOF
-    pacman -Syy
+    pacman -Sy
     check_result "镜像源配置失败"
 }
 
@@ -395,9 +395,13 @@ network_install(){
 create_user() {
     echo -e "${green}请输入要创建的用户名：${een}\c"
     read -r username
+	if id "$username" &>/dev/null; then
+        error_echo "用户 $username 已存在"
+        return 1
+    fi
     useradd -m -G wheel -s /bin/bash "$username"
     echo -e "${green}设置用户 $username 的密码：${een}"
-    passwd "$username"
+    passwd "$username" || error_exit "设置用户密码失败"
     echo ' %wheel ALL=(ALL:ALL) ALL' >> /etc/sudoers
 }
 
@@ -571,7 +575,12 @@ install_flow() {
                 configure_mirrors
                 sync_time
                 install_base
-				chmod +x ./install.sh && cp ./install.sh /mnt/root/install.sh
+				if [ -f ./install.sh ]; then
+				    chmod +x ./install.sh
+				    cp ./install.sh /mnt/root/install.sh || error_exit "复制安装脚本失败"
+				else
+				    error_exit "脚本复制失败，请手动复制到新根目录root下。当前安装脚本不存在"
+				fi
                 echo -e "${green}基础系统安装完成！请输入:" (arch-chroot /mnt /root/install.sh) "继续执行 (2. 进入Chroot配置步骤) 继续安装${een}" && exit 0
                 ;;
             2)
