@@ -85,7 +85,7 @@ install_yay() {
     if [ "$EUID" -eq 0 ]; then
         NORMAL_USER=$(get_normal_user) || return 1
         RUN_CMD="sudo -u $NORMAL_USER"
-        echo -e "${yellow}[信息] 检测到 root 身份，将使用普通用户 $NORMAL_USER 执行安装${een}"
+        echo -e "${yellow}[信息] 检测到 root 身份，将使用普通用户 $NORMAL_USER 执行编译安装${een}"
     else
         RUN_CMD=""
         NORMAL_USER="$USER"
@@ -173,7 +173,7 @@ test_network() {
 configure_mirrors() {
     echo -e "${blue}[2/5] 正在配置镜像源...${een}"
     cat > /etc/pacman.d/mirrorlist <<-EOF
-## 中国镜像源（优化列表）
+## 中国镜像源
 Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/\$repo/os/\$arch
 Server = https://mirrors.ustc.edu.cn/archlinux/\$repo/os/\$arch
 Server = https://mirror.bfsu.edu.cn/archlinux/\$repo/os/\$arch
@@ -310,13 +310,13 @@ install_bluetooth() {
     if detect_bluetooth; then
         echo -e "${green}检测到蓝牙设备，开始安装支持组件...${een}"
         # 安装基础软件包
- 	echo -e "${blue}[1/3] 正在安装蓝牙核心组件...${een}"
+ 		echo -e "${blue}[1/3] 正在安装蓝牙核心组件...${een}"
     	pacman -S --noconfirm bluez bluez-utils bluez-plugins
     	# 配置服务
     	echo -e "${green}启用蓝牙服务...${een}"
     	systemctl enable --now bluetooth.service
     else
-        echo -e "${yellow}跳过蓝牙组件安装${een}"
+        echo -e "${yellow}未检测到蓝牙设备，跳过蓝牙组件安装${een}"
     fi
     }
 
@@ -404,9 +404,9 @@ create_user() {
 # 安装 KDE
 install_kde() {
     echo -e "${blue}[2/4] 正在安装完整KDE桌面环境...${een}"
-    pacman -Sq kde-applications plasma wayland sddm --noconfirm
+    pacman -Sq kde-applications plasma wayland --noconfirm
     pacman -Sq adobe-source-han-serif-cn-fonts wqy-zenhei wqy-microhei noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-sourcecodepro-nerd --noconfirm 
-    systemctl enable sddm
+    systemctl enable plasmalogin.service
     echo -e "${green}KDE 桌面环境安装完成！${een}"
 }
 
@@ -446,13 +446,15 @@ install_fcitx() {
 GTK_IM_MODULE=fcitx
 QT_IM_MODULE=fcitx
 XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+INPUT_METHOD=fcitx
 EOF
 }
 
 # 安装常用软件
 install_software() {
     echo -e "${blue}[4/4] 正在安装常用软件...${een}"
-    pacman -Sq htop btop net-tools firefox make ntfs-3g neofetch git wget kate bind --noconfirm
+    pacman -Sq htop btop net-tools firefox make ntfs-3g fastfetch git wget kate bind aria2 --noconfirm
 }
 # 检测显卡类型
 detect_gpu() {
@@ -470,27 +472,16 @@ detect_gpu() {
 
 # 安装NVIDIA驱动
 install_nvidia() {
-    echo -e "${green}检测到NVIDIA显卡，推荐安装方案："
-    echo "1. 专有驱动 (性能优化)"
-    echo "2. 开源驱动 (nouveau)"
+    echo -e "${green}检测到NVIDIA显卡"
+    echo "1. NVIDIA-OPEN驱动 (性能优化)"
+    echo "2. nouveau驱动"
     echo -e "${red}请选择安装类型 (1/2): ${een}"
     read -r choice
     
     case $choice in
         1)
-            echo -e "${blue}正在安装NVIDIA专有驱动...${een}"
-            pacman -S --noconfirm nvidia nvidia-settings nvidia-utils lib32-nvidia-utils
-            # 处理Optimus双显卡
-            if lspci | grep -iq "intel"; then
-                echo -e "${yellow}检测到双显卡配置，安装Optimus管理器...${een}"
-                pacman -S --noconfirm optimus-manager
-                cat > /etc/optimus-manager/optimus-manager.conf <<-EOF
-[optimus]
-switching=bbswitch
-pci_power_control=no
-EOF
-                systemctl enable optimus-manager
-            fi
+            echo -e "${blue}正在安装NVIDIA驱动...${een}"
+            pacman -S --noconfirm nvidia-open
             # 更新内核镜像
             mkinitcpio -P
             ;;
@@ -508,7 +499,7 @@ EOF
 install_amd() {
     echo -e "${blue}正在安装AMD显卡驱动...${een}"
     pacman -S --noconfirm mesa lib32-mesa vulkan-radeon libva-mesa-driver mesa-vdpau
-    echo "加速视频解码支持："
+    echo "加速视频解码支持安装："
     pacman -S --noconfirm radeontool radeontop rocm-llvm vulkan-radeon lib32-vulkan-radeon
 }
 
@@ -555,10 +546,10 @@ install_gpu_drivers() {
 main_menu() {
     #clear
     echo -e "${blue}==============================================${een}"
-    echo -e "          Arch Linux 全自动安装向导"
+    echo -e "          Arch Linux 自动安装向导"
     echo -e "${blue}==============================================${een}"
     echo -e "1. 全新安装Arch Linux"
-    echo -e "2. 进入Chroot配置"
+    echo -e "2. 进入Chroot配置步骤"
     echo -e "3. 安装桌面环境"
     echo -e "4. 安装yay(AUR助手)(仅限高级用户)"
     echo -e "5. 重启"
@@ -576,29 +567,29 @@ install_flow() {
                 # 全新安装流程
                 test_network
                 show_partition_guide
-		auto_mount
+				auto_mount
                 configure_mirrors
                 sync_time
                 install_base
-		chmod +x ./install.sh && cp ./install.sh /mnt/root/install.sh
-                echo -e "${green}基础系统安装完成！请退出脚本输入:"arch-chroot /mnt /root/install.sh"继续安装${een}"
+				chmod +x ./install.sh && cp ./install.sh /mnt/root/install.sh
+                echo -e "${green}基础系统安装完成！请输入:" (arch-chroot /mnt /root/install.sh) "继续执行 (2. 进入Chroot配置步骤) 继续安装${een}" && exit 0
                 ;;
             2)
                 # Chroot配置流程
                 configure_localization
                 set_hostname
                 set_root_password
-		network_install
+				network_install
                 install_bootloader
                 install_ucode
-  		install_gpu_drivers
+  				install_gpu_drivers
                 echo -e "${green}系统配置完成！建议重启后继续安装桌面环境${een}"
                 ;;
             3)
                 # 桌面环境安装
                 create_user
                 install_desktop
-		install_bluetooth  
+				install_bluetooth  
                 install_fcitx
                 install_software
                 echo -e "${green}桌面环境安装完成！输入 reboot 重启系统${een}"
@@ -606,7 +597,7 @@ install_flow() {
             4)
                 install_yay
                 ;;
-	    5)
+	    	5)
                 reboot
                 ;;
             0)
